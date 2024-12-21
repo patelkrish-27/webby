@@ -12,4 +12,3 @@ const addRestaurant = async ()=>{
     })
 }
 module.exports = {findAllRestaurant,addRestaurant}
-

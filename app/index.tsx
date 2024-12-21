@@ -5,6 +5,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>upload image from device</Text>
+      
       <Button title='upload'></Button>
       <StatusBar style="auto" />
     </View>
