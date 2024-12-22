@@ -5,10 +5,10 @@ const findAllRestaurant = async ()=>{
     console.log(restaurants);
 }
 
-const addRestaurant = async ()=>{
+const addRestaurant = async (name,address)=>{
     const adedRestaurant = await RestaurantModel.create({
-        name:'hayat',
-        address : 'gotri'
+        name:name,
+        address : address
     })
 }
 module.exports = {findAllRestaurant,addRestaurant}

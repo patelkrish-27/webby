@@ -3,9 +3,12 @@ import React, { useState } from "react";
 import tw from "twrnc";
 import { Input,Button } from "@ui-kitten/components";
 import * as ImagePicker from 'expo-image-picker';
+import axios from "axios";
+
+
 const RestaurantForm = () => {
   const [name, setName] = useState('');
-  const [add, setAdd] = useState('');
+  const [address, setAddress] = useState('');
   const [image, setImage] = useState('');
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -19,27 +22,32 @@ const RestaurantForm = () => {
     }
   }
 
-  const sendData = async () => { 
-    
+  const handleForm = async () => { 
+    const response = await axios.post("http://192.168.149.37:3000/add",{name,address})
+    setName('')
+    setAddress('')
   }
   return (
     <View>
       <Text style={tw`text-2xl p-3`}>Register Restaurant</Text>
       <Input
         placeholder="Enter Restaurant Name"
-        // value={'value'}
+        value={name}
         onChangeText={(val) => setName(val)}
         style={tw`m-3`}
         label={"Restaurant Name"}
       />
       <Input
-        placeholder="Enter Restaurant Address"
-        // value={'value'}
-        onChangeText={(val) => setAdd(val)}
+        placeholder="Enter Restaurant addressress"
+        value={address}
+        onChangeText={(val) => setAddress(val)}
         style={tw`m-3`}
-        label={"Restaurant Address"}
+        label={"Restaurant addressress"}
       />
-      <Button appearance="outline" style={tw`w-1/2 m-3`} onPress={pickImage}>Upload Image</Button>
+      <View style={tw`flex-row gap-1`}>
+        <Button appearance="outline" style={tw`w-1/2`} onPress={pickImage}>Upload Image</Button>
+        <Button appearance="filled" style={tw`w-1/2`} onPress={handleForm}>Submit</Button>
+      </View>
     </View>
   );
 };
