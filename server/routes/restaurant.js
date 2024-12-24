@@ -1,20 +1,8 @@
 // BACKEND: restaurantRoutes.js
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads"); // Ensure this folder exists
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
-  },
-});
-
-const upload = multer({ storage: storage });
+const fileUpload = require('express-fileupload');
+const path = require('path');
 
 const { addRestaurant } = require("../controllers/restaurant");
 
@@ -23,13 +11,51 @@ router.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-router.post("/add", upload.single("file"),async (req, res) => {
+
+
+router.post("/add",async (req, res) => {
+
+
+  // try {
+  //   // Check if an image is provided
+  //   if (!req.files || !req.files.image) {
+  //     return res.status(400).send('No image was uploaded.');
+  //   }
+
+  //   // Access the uploaded file
+  //   const image = req.files.image;
+
+  //   // Validate the file type (optional)
+  //   const allowedExtensions = /png|jpg|jpeg|gif/;
+  //   const extension = path.extname(image.name).toLowerCase();
+  //   if (!allowedExtensions.test(extension)) {
+  //     return res.status(400).send('Invalid file type. Please upload an image.');
+  //   }
+
+  //   // Set the upload path
+  //   const uploadPath = path.join(__dirname, 'uploads', image.name);
+
+  //   // Save the file
+  //   await image.mv(uploadPath);
+
+  //   res.send({
+  //     status: true,
+  //     message: 'Image uploaded successfully!',
+  //     path: uploadPath,
+  //   });
+  // } catch (err) {
+  //   res.status(500).send(err.message);
+  // }
+
+
   try {
-    console.log("File:", req.file);
+    const image = req.files.image;
+    console.log("image:",image);
     console.log("Body:", req.body);
 
     const { name, address } = req.body;
-    const imagePath = path.join('uploads', req.file.filename);      
+    const imagePath = path.join('uploads',image.name); 
+    await image.mv(imagePath);  
     // Insert data into the database
     await addRestaurant(name, address, imagePath);
 

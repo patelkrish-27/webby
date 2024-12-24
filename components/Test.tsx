@@ -4,21 +4,26 @@ import tw from "twrnc";
 import { Input, Button } from "@ui-kitten/components";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
+import { transform } from "@babel/core";
 
+// const FormData = global.FormData;
 const RestaurantForm = () => {
   const [name, setName] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [image, setImage] = useState<any>(null);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0]);
-    }
+    try {
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+      if (!result.canceled) {
+        setImage(result.assets[0]);
+      }
+    } catch (error) {}
   };
 
   const handleForm = async () => {
@@ -33,26 +38,25 @@ const RestaurantForm = () => {
       formData.append("address", address); // Append the address field
 
       if (image?.uri) {
-        // Fetch the image and convert to a blob
-        const response = await fetch(image.uri);
-        const blob = await response.blob();
-
-        // Set the file name (ensure a valid name is used)
-        const fileName = image.title || "image.jpg";
-
-        // Append the image file to the FormData object
-        formData.append("image", blob, fileName); // Use the correct field name expected by the backend
+        formData.append("image", {
+          uri: image.uri,
+          type: "image/png",
+          name: "restaurant-image",
+        } as any);
       }
-
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        // transformRequest: () => {
+        //   return formData;
+        // },
+      };
       // Send the FormData object to the backend
       const response = await axios.post(
         "http://192.168.149.37:3000/add", // Your backend endpoint
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Specify the content type
-          },
-        }
+        config
       );
 
       // Handle success response

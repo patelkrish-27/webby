@@ -4,7 +4,7 @@ const restaurantRouter = require('./routes/restaurant')
 const trialMiddleware = require('./middlewares/index')
 const {findAllRestaurant} = require('./controllers/restaurant')
 var bodyParser = require('body-parser')
-
+const fileUpload = require('express-fileupload');
 require("dotenv").config(); 
 
 const app = express()
@@ -15,6 +15,12 @@ app.use(express.urlencoded({extended:true}))
 const cors = require("cors");
 app.use(cors({ origin: "*" })); // Allow all origins for testing purposes
 app.use(bodyParser.json());
+
+app.use(
+    fileUpload({
+      createParentPath: true, // Automatically create directories if they don't exist
+    })
+  );
 
 // app.use('/res',restaurantRouter)
 connectMongoDb()
