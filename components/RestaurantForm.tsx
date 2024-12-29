@@ -34,14 +34,17 @@ const RestaurantForm = () => {
 
       if (image?.uri) {
         // Fetch the image and convert to a blob
-        const response = await fetch(image.uri);
-        const blob = await response.blob();
+       
 
         // Set the file name (ensure a valid name is used)
-        const fileName = image.title || "image.jpg";
+        const fileName = image.fileName || "image.jpg";
 
         // Append the image file to the FormData object
-        formData.append("image", blob, fileName); // Use the correct field name expected by the backend
+        formData.append("image",{
+          uri: image.uri,
+          type: "image/jpeg",
+          name: fileName,
+        } as any); // Use the correct field name expected by the backend
       }
 
       // Send the FormData object to the backend

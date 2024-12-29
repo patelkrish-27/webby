@@ -1,30 +1,26 @@
-const express = require('express')
-const {connectMongoDb} = require('./connection')
-const restaurantRouter = require('./routes/restaurant')
-const trialMiddleware = require('./middlewares/index')
-const {findAllRestaurant} = require('./controllers/restaurant')
-var bodyParser = require('body-parser')
-const fileUpload = require('express-fileupload');
-require("dotenv").config(); 
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+require('dotenv').config();
 
-const app = express()
-const PORT = process.env.PORT
+const { connectMongoDb } = require('./src/config/database');
+const restaurantRouter = require('./src/routes/restaurant.routes');
 
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-const cors = require("cors");
-app.use(cors({ origin: "*" })); // Allow all origins for testing purposes
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(bodyParser.json());
 
-app.use(
-    fileUpload({
-      createParentPath: true, // Automatically create directories if they don't exist
-    })
-  );
+// Routes
+app.use('/api/restaurants', restaurantRouter);
 
-// app.use('/res',restaurantRouter)
-connectMongoDb()
-app.use(trialMiddleware)
-app.use(restaurantRouter)
-findAllRestaurant()
-app.listen(PORT)
+// Database connection
+connectMongoDb();
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

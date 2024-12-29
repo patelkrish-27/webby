@@ -9,7 +9,7 @@ export default function App() {
   return (
     <View>
       <ApplicationProvider {...eva} theme={eva.light}>
-        <NewRestaurantForm></NewRestaurantForm>
+        <RestaurantForm></RestaurantForm>
       </ApplicationProvider>
       <StatusBar style="auto" />
     </View>

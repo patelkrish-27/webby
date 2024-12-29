@@ -6,7 +6,7 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { transform } from "@babel/core";
 
-// const FormData = global.FormData;
+const FormData = global.FormData;
 const RestaurantForm = () => {
   const [name, setName] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -41,16 +41,16 @@ const RestaurantForm = () => {
         formData.append("image", {
           uri: image.uri,
           type: "image/png",
-          name: "restaurant-image",
+          name: image.fileName,
         } as any);
       }
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        // transformRequest: () => {
-        //   return formData;
-        // },
+        transformRequest: () => {
+          return formData;
+        },
       };
       // Send the FormData object to the backend
       const response = await axios.post(
