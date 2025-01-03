@@ -27,9 +27,7 @@ class RestaurantController {
 
             // Use full path for file upload
             const uploadPath = path.join(uploadsDir, Date.now() + '-' + image.name);
-            console.log("image:",uploadPath);
             await image.mv(uploadPath);
-            console.log("reached here");
             const uploadResult = await uploadService.uploadFile(uploadPath);
             const restaurant = await RestaurantModel.create({
                 name,

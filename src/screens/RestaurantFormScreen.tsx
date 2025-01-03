@@ -4,8 +4,17 @@ import tw from "twrnc";
 import { Input, Button } from "@ui-kitten/components";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/types";
 
-const RestaurantForm = () => {
+type RestaurantFormProps = {
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    "RegisterRestaurant"
+  >;
+};
+
+const RestaurantForm = ({ navigation }: RestaurantFormProps) => {
   const [name, setName] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [image, setImage] = useState<any>(null);
@@ -34,13 +43,12 @@ const RestaurantForm = () => {
 
       if (image?.uri) {
         // Fetch the image and convert to a blob
-       
 
         // Set the file name (ensure a valid name is used)
         const fileName = image.fileName || "image.jpg";
 
         // Append the image file to the FormData object
-        formData.append("image",{
+        formData.append("image", {
           uri: image.uri,
           type: "image/jpeg",
           name: fileName,
